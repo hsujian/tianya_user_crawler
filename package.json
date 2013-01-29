@@ -1,0 +1,23 @@
+{
+  "name": "tianya_crawler",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "coffee-script": "*",
+    "underscore": "~1.4.3",
+    "crawler": "~0.2.2",
+    "wget": "0.0.1"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*",
+    "sinon": "*",
+    "zombie": "*",
+    "html5": "*",
+    "grunt": "~0.4.0",
+    "grunt-coffeelint": "*"
+  }
+}
