@@ -20,7 +20,9 @@ page_parse = ($) ->
       id: id
       name: name
       logo: logo
-    wget.download logo, "logo/#{id}.jpg"
+    img = wget.download logo, "logo/#{id}.jpg"
+    img.on 'error', (err) ->
+      console.log err
 
 tianya_page_cb = (error, result, $) ->
   page_parse $
