@@ -6,15 +6,21 @@ fs = require 'fs'
 wget = require 'wget'
 
 tianya = {}
+get_tianya_user_home = (id) ->
+  "http://www.tianya.cn/#{id}"
 get_tianya_user_logo = (id) ->
   "http://tx.tianyaui.com/logo/#{id}"
 get_tianya_user_id = (url) ->
-  url.substr 21
+  idx = url.lastIndexOf '/'
+  return off if idx == -1
+  url.substr idx+1
 
 page_parse = ($) ->
-  $('a.author').each ->
-    name = $(@).text()
-    id = get_tianya_user_id $(@).attr('href')
+  $('img').each ->
+    name = $(@).attr('alt')
+    return off unless name
+    id = get_tianya_user_id $(@).attr('src')
+    return off unless id
     logo = get_tianya_user_logo id
     tianya[id] =
       id: id
@@ -24,15 +30,19 @@ page_parse = ($) ->
     img.on 'error', (err) ->
       console.log err
 
+next_page_parse = ($) ->
+  $('img').each ->
+    name = $(@).attr('alt')
+    return off unless name
+    id = get_tianya_user_id $(@).attr('src')
+    return off unless id
+    c.queue get_tianya_user_home id
+  off
+
 tianya_page_cb = (error, result, $) ->
   page_parse $
-
-  return if _.size(tianya) > 10000
-
-  $('.short-pages-2.clearfix .links a').each (idx, a) ->
-    if a.innerHTML == '下一页'
-      c.queue a.href
-  off
+  return if _.size(tianya) > 50000
+  next_page_parse $
 
 job_end = ->
   for id, u of tianya
@@ -44,4 +54,4 @@ c = new Crawler
   callback: tianya_page_cb
   onDrain: job_end
 
-c.queue "http://bbs.tianya.cn/list-funinfo-1.shtml"
+c.queue "http://www.tianya.cn/26520815"
